@@ -52,7 +52,7 @@ model Product {
   id Int @id @default(autoincrement())
 
   productName String @map("product_name")
-  productCode String @map("product_code")
+  productCode String @map("product_code") @unique
 
   price       String
   finalPrice  String   @map("final_price")
@@ -61,7 +61,7 @@ model Product {
   images      String
   cover       String
   qty         Int
-  categorty   String
+  category   String
   description String
   status    productStatus
 
