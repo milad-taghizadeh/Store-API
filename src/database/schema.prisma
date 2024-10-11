@@ -5,7 +5,6 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 // TODO: state || status
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,25 +17,26 @@ datasource db {
 model User {
   id String @id @default(uuid()) @db.Uuid
 
-  firstname String?
-  lastName  String?
+  firstName String? @map("first_name")
+  lastName  String? @map("last_name")
   email     String? @unique
   phone     String  @unique
 
+  status     userStatus @map("status")
+  // userState userState @map("user_state")
+  discountId Int?
+
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now()) @updatedAt()
-
-  // Otp       Otp[]
-  Favorites Favorites[]
-  Requests  Requests[]
+  Comment   Comment[]
+  Discount  Discount? @relation(fields: [discountId], references: [id])
 
   @@map("user")
 }
 
 model Otp {
-  id          Int      @id @default(autoincrement())
-  // owner     User     @relation(fields: [userId], references: [id])
-  // userId    String   @db.Uuid
+  id Int @id @default(autoincrement())
+
   code        String
   phoneNumber String
   isUsed      Boolean  @default(true)
@@ -48,180 +48,70 @@ model Otp {
   @@map("otp")
 }
 
-model Agents {
-  id            String  @id @default(uuid()) @db.Uuid
-  name          String?
-  email         String? @unique
-  facePic       String? @map("face_pic")
-  nationalCode  String? @map("national_code")
-  IDCardPicture String? @map("id_card_picture")
-  bio           String?
-  company       String?
-  phone         String  @unique
-  //TODO status
-  status    Agent_Status 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+model Product {
+  id Int @id @default(autoincrement())
 
-  Properties Properties[]
-  Requests   Requests[]
+  productName String @map("product_name")
+  productCode String @map("product_code")
 
-  @@map("agents")
-}
-enum Agent_Status {
-  OK
-  SUSPENDED
-  NOT_VERIFIED
-  PENDING
-  DELETED
-}
-
-model Admins {
-  id       String @id @default(cuid()) @db.Uuid
-  name     String
-  username String @unique
-  password String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  @@map("admins")
-}
-
-model Properties {
-  id String @id @default(cuid()) @db.Uuid
-
-  title       String
+  price       String
+  finalPrice  String   @map("final_price")
+  detail      String[]
+  color       String[]
+  images      String
+  cover       String
+  qty         Int
+  categorty   String
   description String
-  price       Int
+  status    productStatus
 
-  address  String //TODO: addres relation
-  city     String
-  state    String
-  zip      String
-  location Json
-
-  type   PropertyType
-  status PropertyStatus
-
-  listingDate  DateTime
-  listingPrice Int
-
-  agentId    String @db.Uuid
-  requestsId String @db.Uuid
-  bedrooms   Int
-  bathrooms  Int
-
-  squareFootage     Int //details
-  lotSize           Int
-  yearBuilt         Int
-  propertyType      String
-  architectureStyle String
-
-  agent            Agents             @relation(fields: [agentId], references: [id])
-  request          Requests           @relation(fields: [requestsId], references: [id])
-  Favorites        Favorites[]
-  PropertyFeatures PropertyFeatures[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  @@map("properties")
+  createdAt DateTime?     @default(now())
+  updatedAt DateTime?     @default(now()) @updatedAt
+  Comment   Comment[]
 }
 
-model Favorites {
-  id String @id @default(uuid()) @db.Uuid
+model Comment {
+  id        Int    @id @default(autoincrement())
+  userId    String @db.Uuid
+  productId Int
 
-  userId     String @db.Uuid
-  propertyId String @db.Uuid
+  userID    User    @relation(fields: [userId], references: [id])
+  productID Product @relation(fields: [productId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  property Properties @relation(fields: [propertyId], references: [id])
-  user     User       @relation(fields: [userId], references: [id])
-
-  @@map("favorites")
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
-model Requests {
-  id            String        @id @default(uuid()) @db.Uuid
-  status        RequestStatus
-  address       String
-  squareFootage Int           @map("square-footage")
-  city          String
-  state         String
-  rooms         Int
-  location      Json
-  userId        String        @db.Uuid
-  agentId       String?       @db.Uuid
-  type          PropertyType
+model Discount {
+  id Int @id @default(autoincrement())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  percentage   Int?
+  reducePrice  Int?         @map("reduce_price")
+  discountMode discountMode @map("discount_mode")
+  expiresAt    DateTime     @map("expires_at")
+  value        String
 
-  user       User         @relation(fields: [userId], references: [id])
-  agent      Agents?      @relation(fields: [agentId], references: [id])
-  Properties Properties[]
+  userID User[]
 
-  @@map("requests")
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
-model Features {
-  id String @id @default(uuid()) @db.Uuid
-
-  featureType FeatureType
-  featureName String
-  description String
-
-  //TODO : images
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  PropertyFeatures PropertyFeatures[]
-
-  @@map("features")
-}
-
-model PropertyFeatures {
-  id String @id @default(uuid()) @db.Uuid
-
-  propertyId String @db.Uuid
-  featureId  String @db.Uuid
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  feature  Features   @relation(fields: [featureId], references: [id])
-  property Properties @relation(fields: [propertyId], references: [id])
-
-  @@map("property_features")
-}
-
-enum FeatureType {
-  INTERIOR
-  EXTERIOR
-  AMENITY
-  OTHER
-}
-
-enum PropertyType {
-  RENT
-  SALE
-  MORTGAGE
-}
-
-enum RequestStatus {
-  PENDING
-  CANCELED
-  EXPIRED
-  DONE
-}
-
-enum PropertyStatus {
-  SOLD
-  OPEN
+enum userStatus {
+  NOT_VALIDATED
+  VALIDATED
   DELETED
+  BANNED
+  TERMINATED
+}
 
+enum discountMode {
+  PERCENTAGE
+  REDUCE_PRICE
+}
+
+enum productStatus {
+  STOP_SELL
+  SOLD_OUT
+  FOR_SALE
 }
