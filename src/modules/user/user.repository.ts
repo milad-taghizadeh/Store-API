@@ -39,9 +39,6 @@ export class UserRepository implements Repository<User> {
       where: {
         id
       },
-      include: {
-        Requests: true
-      }
     })
   }
 
@@ -50,9 +47,6 @@ export class UserRepository implements Repository<User> {
       where: {
         phone
       },
-      include: {
-        Requests: true
-      }
     })
   }
 
@@ -62,9 +56,6 @@ export class UserRepository implements Repository<User> {
       where: {
         ...filters
       },
-      include: {
-        Requests: true
-      }
     })
   }
 }
