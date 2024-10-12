@@ -35,20 +35,19 @@ export class ProductRepository implements Repository<Product> {
     });
   }
 
-  async findByProductCode (productCode : string): Promise<Product> {
+  async findByProductCode(productCode: string): Promise<Product> {
     return await this.prismaService.product.findUnique({
-        where :{
-            productCode
-        }
-    })
+      where: {
+        productCode,
+      },
+    });
   }
 
-//   FIXME: fix findmany in category find 
-  async findByCategory (category : string): Promise<Product> {
-    return await this.prismaService.product.findFirst({
-        where :{
-            category
-        }
-    })
+  async findByCategoryID(categoryID: number): Promise<Product[]> {
+    return await this.prismaService.product.findMany({
+      where: {
+        categoryId: categoryID,
+      },
+    });
   }
 }

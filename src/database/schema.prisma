@@ -26,10 +26,11 @@ model User {
   // userState userState @map("user_state")
   discountId Int?
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now()) @updatedAt()
+  createdAt DateTime?  @default(now())
+  updatedAt DateTime?  @default(now()) @updatedAt()
   Comment   Comment[]
-  Discount  Discount? @relation(fields: [discountId], references: [id])
+  Discount  Discount?  @relation(fields: [discountId], references: [id])
+  Category  Category[]
 
   @@map("user")
 }
@@ -52,22 +53,23 @@ model Product {
   id Int @id @default(autoincrement())
 
   productName String @map("product_name")
-  productCode String @map("product_code") @unique
+  productCode String @unique @map("product_code")
 
   price       String
-  finalPrice  String   @map("final_price")
+  finalPrice  String        @map("final_price")
   detail      String[]
   color       String[]
   images      String
   cover       String
   qty         Int
-  category   String
   description String
-  status    productStatus
+  status      productStatus
+  categoryId Int?
+  Comment    Comment[]
 
-  createdAt DateTime?     @default(now())
-  updatedAt DateTime?     @default(now()) @updatedAt
-  Comment   Comment[]
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @default(now()) @updatedAt
 }
 
 model Comment {
@@ -77,6 +79,19 @@ model Comment {
 
   userID    User    @relation(fields: [userId], references: [id])
   productID Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+
+  name      String
+  userId    String    @db.Uuid
+  productID Product[]
+
+  createdBy User @relation(fields: [userId], references: [id])
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now()) @updatedAt
