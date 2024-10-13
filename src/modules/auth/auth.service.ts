@@ -71,8 +71,10 @@ export class AuthService {
     return await this.userRepository.create({
       phone: phoneNumber,
       email: null,
-      firstname: null,
+      firstName: null,
       lastName: null,
+      discountId: null,
+      status:'NOT_VALIDATED'
     });
   }
 }
