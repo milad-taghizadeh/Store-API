@@ -18,7 +18,7 @@ export class CategoryRepository implements Repository<Category> {
     });
   }
 
-  async update(id: number, data: Category): Promise<Category> {
+  async update(id: number, data: Omit<Category, "id" | "createdAt" | "updatedAt">): Promise<Category> {
     return await this.prismaService.category.update({
       where: {
         id,

@@ -10,7 +10,7 @@ import { SwaggerConsumes } from 'src/common/enums/swagger.consumes.enum';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post("newCategory")
+  @Post("new")
   @ApiConsumes(SwaggerConsumes.urlEncoded, SwaggerConsumes.Json)
   async newCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return await this.categoryService.newCategory(createCategoryDto);
@@ -26,7 +26,8 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
+  @ApiConsumes(SwaggerConsumes.urlEncoded, SwaggerConsumes.Json)
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.update(+id, updateCategoryDto);
   }

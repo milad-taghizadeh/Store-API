@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './category.repository';
@@ -24,15 +28,33 @@ export class CategoryService {
     return `This action returns all category`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findById(id);
+    if (!category) {
+      throw new NotFoundException(CategoryMessages.CATEGORY_NOT_FOUND);
+    }
+    return category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.findOne(id);
+    const checkExist = await this.checkCategoryExist(updateCategoryDto.name)
+    if (checkExist) {
+      throw new ForbiddenException(CategoryMessages.CATEGORY_IS_ALREADY_EXIST)
+    }
+    if (!category)
+      throw new NotFoundException(CategoryMessages.CATEGORY_NOT_FOUND);
+    return await this.categoryRepository.update(id, {
+      name: updateCategoryDto.name,
+    });
   }
 
   remove(id: number) {
     return `This action removes a #${id} category`;
+  }
+
+  async checkCategoryExist(name: string) {
+    const category = await this.categoryRepository.findByName(name);
+    return category
   }
 }
