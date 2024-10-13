@@ -37,6 +37,10 @@ export class CategoryRepository implements Repository<Category> {
     });
   }
 
+  async findAll(): Promise<Category[]> {
+    return await this.prismaService.category.findMany();
+  }
+
   async deleteById(id: number): Promise<Category> {
     return await this.prismaService.category.delete({
       where: {

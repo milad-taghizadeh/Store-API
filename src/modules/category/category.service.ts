@@ -24,9 +24,9 @@ export class CategoryService {
     });
   }
 
-  findAll() {
-    return `This action returns all category`;
-  }
+  async findAll() {
+    return await this.categoryRepository.findAll()
+  };
 
   async findOne(id: number) {
     const category = await this.categoryRepository.findById(id);

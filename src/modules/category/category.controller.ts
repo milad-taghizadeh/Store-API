@@ -16,12 +16,12 @@ export class CategoryController {
     return await this.categoryService.newCategory(createCategoryDto);
   }
 
-  @Get()
+  @Get("get")
   findAll() {
     return this.categoryService.findAll();
   }
 
-  @Get(':id')
+  @Get('get/:id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
   }
@@ -32,7 +32,7 @@ export class CategoryController {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }
