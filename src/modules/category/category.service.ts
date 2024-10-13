@@ -1,11 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryRepository } from './category.repository';
+import { CategoryMessages } from './messages/category.messages';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(private readonly categoryRepository: CategoryRepository) {}
+
+  async newCategory(createCategoryDto: CreateCategoryDto) {
+    const isCategoryExist = await this.categoryRepository.findByName(
+      createCategoryDto.name,
+    );
+    if (isCategoryExist) {
+      throw new ForbiddenException(CategoryMessages.CATEGORY_IS_ALREADY_EXIST);
+    }
+    return await this.categoryRepository.create({
+      name: createCategoryDto.name,
+    });
   }
 
   findAll() {

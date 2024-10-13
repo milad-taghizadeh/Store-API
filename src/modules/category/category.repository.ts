@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { Repository } from 'src/common/interfaces/repository';
 import { PrismaService } from 'src/database/database.service';
+import { v4 as uuid } from "uuid";
 
 @Injectable()
 export class CategoryRepository implements Repository<Category> {
+
   constructor(private readonly prismaService: PrismaService) {}
-  async create(data: Category): Promise<Category> {
+
+
+  async create(data: Omit<Category, "id" | "createdAt" | "updatedAt">): Promise<Category> {
     return await this.prismaService.category.create({
       data: {
         ...data,
@@ -32,5 +36,12 @@ export class CategoryRepository implements Repository<Category> {
       },
     });
   }
- 
+
+  async findByName(name: string): Promise<Category> {
+    return await this.prismaService.category.findUnique({
+      where: {
+        name,
+      },
+    });
+  }
 }

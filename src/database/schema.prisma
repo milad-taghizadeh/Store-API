@@ -26,11 +26,10 @@ model User {
   // userState userState @map("user_state")
   discountId Int?
 
-  createdAt DateTime?  @default(now())
-  updatedAt DateTime?  @default(now()) @updatedAt()
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt()
   Comment   Comment[]
-  Discount  Discount?  @relation(fields: [discountId], references: [id])
-  Category  Category[]
+  Discount  Discount? @relation(fields: [discountId], references: [id])
 
   @@map("user")
 }
@@ -64,12 +63,12 @@ model Product {
   qty         Int
   description String
   status      productStatus
-  categoryId Int?
-  Comment    Comment[]
+  categoryId  Int?
+  Comment     Comment[]
 
-  Category   Category? @relation(fields: [categoryId], references: [id])
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now()) @updatedAt
+  Category  Category? @relation(fields: [categoryId], references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
 model Comment {
@@ -87,11 +86,8 @@ model Comment {
 model Category {
   id Int @id @default(autoincrement())
 
-  name      String
-  userId    String    @db.Uuid
+  name      String    @unique
   productID Product[]
-
-  createdBy User @relation(fields: [userId], references: [id])
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now()) @updatedAt

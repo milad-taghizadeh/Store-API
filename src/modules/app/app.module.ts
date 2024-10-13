@@ -10,6 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 import { join } from 'path';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ProductModule } from '../product/product.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { ProductModule } from '../product/product.module';
     AppModule,
     AuthModule,
     UserModule,    
-    ProductModule,    
+    ProductModule,
+    CategoryModule  
   ],
   controllers: [AppController],
   providers: [AppService],
