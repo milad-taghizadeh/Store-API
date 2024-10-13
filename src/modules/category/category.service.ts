@@ -36,11 +36,16 @@ export class CategoryService {
     return category;
   }
 
+  async findByName(name: string) {
+    const category = await this.categoryRepository.findByName(name);
+    return category;
+  }
+
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
-    const checkExist = await this.checkCategoryExist(updateCategoryDto.name)
+    const checkExist = await this.findByName(updateCategoryDto.name);
     if (checkExist) {
-      throw new ForbiddenException(CategoryMessages.CATEGORY_IS_ALREADY_EXIST)
+      throw new ForbiddenException(CategoryMessages.CATEGORY_IS_ALREADY_EXIST);
     }
     if (!category)
       throw new NotFoundException(CategoryMessages.CATEGORY_NOT_FOUND);
@@ -49,12 +54,10 @@ export class CategoryService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
-  }
-
-  async checkCategoryExist(name: string) {
-    const category = await this.categoryRepository.findByName(name);
-    return category
+  async remove(id: number) {
+    const isCategoryExists = await this.findOne(id);
+    if (!isCategoryExists)
+      throw new NotFoundException(CategoryMessages.CATEGORY_NOT_FOUND);
+    return await this.categoryRepository.deleteById(id)
   }
 }
