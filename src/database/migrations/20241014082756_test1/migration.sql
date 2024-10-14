@@ -37,7 +37,7 @@ CREATE TABLE "otp" (
 
 -- CreateTable
 CREATE TABLE "Product" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL,
     "product_name" TEXT NOT NULL,
     "product_code" TEXT NOT NULL,
     "price" TEXT NOT NULL,
@@ -47,9 +47,9 @@ CREATE TABLE "Product" (
     "images" TEXT NOT NULL,
     "cover" TEXT NOT NULL,
     "qty" INTEGER NOT NULL,
-    "categorty" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "status" "productStatus" NOT NULL,
+    "categoryId" INTEGER,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
@@ -60,11 +60,21 @@ CREATE TABLE "Product" (
 CREATE TABLE "Comment" (
     "id" SERIAL NOT NULL,
     "userId" UUID NOT NULL,
-    "productId" INTEGER NOT NULL,
+    "productId" UUID NOT NULL,
     "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Category" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -87,8 +97,17 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "user_phone_key" ON "user"("phone");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_product_code_key" ON "Product"("product_code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+
 -- AddForeignKey
 ALTER TABLE "user" ADD CONSTRAINT "user_discountId_fkey" FOREIGN KEY ("discountId") REFERENCES "Discount"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

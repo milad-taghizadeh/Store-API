@@ -49,7 +49,7 @@ model Otp {
 }
 
 model Product {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid()) @db.Uuid
 
   productName String @map("product_name")
   productCode String @unique @map("product_code")
@@ -74,7 +74,7 @@ model Product {
 model Comment {
   id        Int    @id @default(autoincrement())
   userId    String @db.Uuid
-  productId Int
+  productId String @db.Uuid
 
   userID    User    @relation(fields: [userId], references: [id])
   productID Product @relation(fields: [productId], references: [id])
