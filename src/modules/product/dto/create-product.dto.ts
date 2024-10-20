@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { productStatus } from "@prisma/client";
-import { IsString, IsNotEmpty, Length, IsNumber } from "class-validator";
+import { IsString, IsNotEmpty, Length, IsNumber, IsArray } from "class-validator";
 
 export class CreateProductDto {
     @ApiProperty()
@@ -26,18 +26,18 @@ export class CreateProductDto {
     finalPrice: string;
 
     @ApiProperty()
-    @IsString()
+    @IsArray()
     detail: string[];
 
     @ApiProperty()
-    @IsString()
     @IsNotEmpty()
-    color: string;
+    @IsArray()
+    color: string[];
 
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    images: string[];
+    images: string;
 
     @ApiProperty()
     @IsString()
@@ -45,7 +45,6 @@ export class CreateProductDto {
     cover: string;
 
     @ApiProperty()
-    @IsNumber()
     @IsNotEmpty()
     qty: number;
     
@@ -63,6 +62,5 @@ export class CreateProductDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsNumber()
     categoryId: number;
 }
