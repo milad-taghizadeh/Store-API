@@ -57,6 +57,7 @@ export class CreateProductDto {
     
     @ApiProperty({enum: productStatus})
     @IsString()
+    @IsNotEmpty()
     @Length(0, 100)
     status: productStatus;
 

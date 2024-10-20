@@ -37,10 +37,30 @@ export class ProductRepository implements Repository<Product> {
         })
     }
 
+    async findByCode(productCode: string): Promise<Product> {
+        return await this.prismaService.product.findFirst({
+            where: {
+                productCode 
+            }
+        })
+    }
+
     async findMany(data: Partial<Product>): Promise<Product[]> {
         return await this.prismaService.product.findMany({
             where: {
                 categoryId: data.categoryId
+            }
+        })
+    }
+
+    async findAll(): Promise<Product[]> {
+        return await this.prismaService.product.findMany()
+    }
+
+    async deleteById(id:string): Promise<Product> {
+        return await this.prismaService.product.delete({
+            where: {
+                id
             }
         })
     }
