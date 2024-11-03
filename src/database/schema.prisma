@@ -65,13 +65,12 @@ model Product {
   description String
   status      productStatus
   categoryId  Int?
-  basketId    String?       @db.Uuid
   Comment     Comment[]
+  basket      Basket[]
 
   Category  Category? @relation(fields: [categoryId], references: [id])
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now()) @updatedAt
-  Basket    Basket?   @relation(fields: [basketId], references: [id])
 }
 
 model Comment {
@@ -115,16 +114,16 @@ model Discount {
 model Basket {
   id String @id @default(uuid()) @db.Uuid
 
-  userId   String    @db.Uuid
+  userId     String    @db.Uuid
   discountId Int?
-  products Product[]
-  totalPrice Int? @map("total_price")
+  totalPrice Int?      @map("total_price")
+  Product    Product[]
 
-  userID User @relation(fields: [userId], references: [id])
+  userID   User      @relation(fields: [userId], references: [id])
   discount Discount? @relation(fields: [discountId], references: [id])
 
-  createdAt  DateTime? @default(now())
-  updatedAt  DateTime? @default(now()) @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now()) @updatedAt
 }
 
 enum userStatus {
